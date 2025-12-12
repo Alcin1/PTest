@@ -22,13 +22,28 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Run Tests
         run: |
           echo "Simulation des tests..."  # ton code existant
           # ou pytest si tu as des tests réels
           # pip install pytest
           # pytest
+
   # ------------------------------------------------------------------
-  # JOB 2: QUALITÉ DU CODE (SonarQube / SonarCloud)
+  # JOB 2: Analyse SonarQube / SonarCloud
   # ------------------------------------------------------------------
 
+  sonarqube:
+    needs: build   # s'exécute après le job build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # obligatoire pour SonarQube/SonarCloud
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
