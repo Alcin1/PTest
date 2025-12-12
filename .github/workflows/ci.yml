@@ -34,26 +34,23 @@ jobs:
   # JOB 2: QUALITÉ DU CODE (SonarQube / SonarCloud)
   # ------------------------------------------------------------------
 
-  sonarqube:   # <-- indente sous jobs
+  sonarqube:
     needs: build  # s'exécute après le job build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4   # v4 est la dernière stable
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # important pour SonarQube
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          # C'est la méthode OBLIGATOIRE pour que le token fonctionne
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        uses: SonarSource/sonarqube-scan-action@v4
         with:
-          args: >
-            -Dsonar.projectKey=Alcin1_PTest
-            -Dsonar.organization=alcin1
-            -Dsonar.host.url=https://sonarcloud.io
+          projectBaseDir: .
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: SonarQube Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@v1
+        uses: SonarSource/sonarqube-quality-gate-action@v1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
