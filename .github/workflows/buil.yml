@@ -1,9 +1,13 @@
 name: CI + App
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-
   # ------------------------------------------------------------------
   # JOB 1: Build + Tests
   # ------------------------------------------------------------------
@@ -31,14 +35,6 @@ jobs:
   # ------------------------------------------------------------------
   # JOB 2: Analyse SonarCloud
   # ------------------------------------------------------------------
-name: Build
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-jobs:
   sonarqube:
     name: SonarQube
     runs-on: windows-latest
