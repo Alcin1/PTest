@@ -34,22 +34,27 @@ jobs:
   # JOB 2: QUALITÉ DU CODE (SonarQube / SonarCloud)
   # ------------------------------------------------------------------
   sonarqube:
-    needs: build  # s'exécute après le job build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # important pour SonarQube
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        with:
-          projectBaseDir: .
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: SonarQube Scan
+      # MISE À JOUR : Passage de v4 à v6 pour la sécurité (recommandé par vos logs)
+      # Note : v5.0.0 ou master fonctionne aussi souvent, mais suivez le log.
+      uses: SonarSource/sonarqube-scan-action@v5.0.0
+      env:
+        # Assurez-vous que ces noms correspondent exactement à vos Secrets GitHub
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: .
 
-      - name: SonarQube Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@v1
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: SonarQube Quality Gate
+      uses: SonarSource/sonarqube-quality-gate-action@v1
+      env:
+        # Il est souvent nécessaire de rappeler l'URL ici aussi
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
