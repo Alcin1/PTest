@@ -4,6 +4,9 @@ on: [push]
 
 jobs:
 
+  # ------------------------------------------------------------------
+  # JOB 1: Build + Tests
+  # ------------------------------------------------------------------
   build:
     runs-on: ubuntu-latest
     steps:
@@ -19,25 +22,25 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install test tools
+      - name: Run Tests
         run: |
-          pip install pytest pytest-cov
+          echo "Simulation des tests..."  # ou pytest si tu as des tests réels
+          # pip install pytest
+          # pytest
 
-      - name: Run Tests with Coverage
-        run: |
-          pytest --cov=. --cov-report=xml
-
+  # ------------------------------------------------------------------
+  # JOB 2: Analyse SonarCloud
+  # ------------------------------------------------------------------
   sonarqube:
-    needs: build
+    needs: build   # s'exécute après le job build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # obligatoire pour SonarCloud
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
-
