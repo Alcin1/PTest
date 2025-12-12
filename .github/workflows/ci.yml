@@ -51,7 +51,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=alcin1
-            -Dsonar.organization=mon-org
+            -Dsonar.organization=alcin1
             -Dsonar.host.url=https://sonarcloud.io
 
       - name: SonarQube Quality Gate
