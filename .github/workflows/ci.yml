@@ -1,11 +1,8 @@
 name: CI + App
+
 on: [push]
 
 jobs:
-
-  # ------------------------------------------------------------------
-  # JOB 1: Téléchager API, dépendances
-  # ------------------------------------------------------------------
 
   build:
     runs-on: ubuntu-latest
@@ -22,27 +19,25 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Tests
+      - name: Install test tools
         run: |
-          echo "Simulation des tests..."  # ton code existant
-          # ou pytest si tu as des tests réels
-          # pip install pytest
-          # pytest
+          pip install pytest pytest-cov
 
-  # ------------------------------------------------------------------
-  # JOB 2: Analyse SonarQube / SonarCloud
-  # ------------------------------------------------------------------
+      - name: Run Tests with Coverage
+        run: |
+          pytest --cov=. --cov-report=xml
 
   sonarqube:
-    needs: build   # s'exécute après le job build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # obligatoire pour SonarQube/SonarCloud
+          fetch-depth: 0
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
+
