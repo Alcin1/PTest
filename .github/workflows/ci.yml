@@ -32,7 +32,6 @@ jobs:
   # JOB 2: Analyse SonarCloud
   # ------------------------------------------------------------------
   sonarqube:
-    needs: build   # s'exécute après le job build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +39,7 @@ jobs:
           fetch-depth: 0   # obligatoire pour SonarCloud
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v6
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
