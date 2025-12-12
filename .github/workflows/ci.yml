@@ -46,7 +46,7 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@v6
         with:
           args: >
-            -Dsonar.projectKey=mon-projet
+            -Dsonar.projectKey=alcin1_ptest
             -Dsonar.organization=mon-org
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
