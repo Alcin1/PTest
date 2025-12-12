@@ -22,35 +22,35 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-
       - name: Run Tests
         run: |
-          echo "Simulation des tests..." 
+          echo "Simulation des tests..."  # ton code existant
           # ou pytest si tu as des tests réels
           # pip install pytest
           # pytest
-
   # ------------------------------------------------------------------
   # JOB 2: QUALITÉ DU CODE (SonarQube / SonarCloud)
   # ------------------------------------------------------------------
-  sonarqube:
-    needs: build
+
+  sonarqube:   # <-- indente sous jobs
+    needs: build  # s'exécute après le job build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4   # v4 est la dernière stable
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # important pour SonarQube
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        uses: sonarsource/sonarqube-scan-action@master
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          # C'est la méthode OBLIGATOIRE pour que le token fonctionne
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: .
-
+          args: >
+            -Dsonar.projectKey=Alcin1_PTest
+            -Dsonar.organization=alcin1
+            -Dsonar.host.url=https://sonarcloud.io
       - name: SonarQube Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@v1
+        uses: sonarsource/sonarqube-quality-gate-action@v1
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
