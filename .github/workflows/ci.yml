@@ -41,7 +41,7 @@ jobs:
           fetch-depth: 0  # important pour SonarQube
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: sonarsource/sonarqube-scan-action@v6
         env:
           # C'est la méthode OBLIGATOIRE pour que le token fonctionne
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
