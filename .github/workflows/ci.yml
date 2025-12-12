@@ -1,18 +1,58 @@
-name: Desktop App CI
+name: CI + App
+
 on: [push]
+
 jobs:
+
+  # ------------------------------------------------------------------
+  # JOB 1: Téléchager API, dépendances
+  # ------------------------------------------------------------------
+
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    - name: Run Tests
-      run: |
-        # Ici on lancerait les tests unitaires
-        echo "Simulation des tests..."
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        run: |
+          echo "Simulation des tests..."  # ton code existant
+          # ou pytest si tu as des tests réels
+          # pip install pytest
+          # pytest
+
+  # ------------------------------------------------------------------
+  # JOB 2: QUALITÉ DU CODE (SonarQube / SonarCloud)
+  # ------------------------------------------------------------------
+
+
+  sonarqube:
+    needs: build  # s'exécute après le job build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # important pour SonarQube
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: SonarQube Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
