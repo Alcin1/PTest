@@ -11,35 +11,43 @@ jobs:
   # ------------------------------------------------------------------
   # JOB 1: Build + Analyze
   # ------------------------------------------------------------------
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+build:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8' # J'ai mis 3.8 entre guillemets, bonne pratique
 
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Install outils ci
-        run: |
-          pip install --upgrade pip
-          pip install bandit pylint safety
+    - name: Install outils ci (safety, bandit, pylint)
+      run: |
+        pip install safety bandit pylint
 
-      - name: Bandit & Safety  
-        run: |
-          safety check -r requirements.txt
-          run: bandit -r . -q || exit 1
-      - name: Run Tests
-        run: |
-          echo "Simulation des tests..."  # ou pytest si tu as des tests réels
-          # pip install pytest
-          # pytest
+    # --- ÉTAPE 1: ANCIENNE ÉTAPE CORRIGÉE ET MISE À JOUR ---
+    - name: Scan des dépendances avec Safety (Commande 'scan' recommandée)
+      run: |
+        # Correction de l'erreur 'run:: command not found' et utilisation de 'scan'
+        # Pour ignorer les avertissements sur les paquets non épinglés (unpinned),
+        # ajoutez --ignore-unpinned-requirements pour un échec strict si des vulnérabilités sont trouvées.
+        safety scan -r requirements.txt
+
+    # --- ÉTAPE 2: AJOUT DU BANDEAU DANS SA PROPRE ÉTAPE ---
+    - name: Analyse statique de code avec Bandit
+      # Exécute bandit et quitte avec 1 si des problèmes sont trouvés.
+      run: bandit -r . -q || exit 1 
+      
+    - name: Run Tests
+      run: |
+        echo "Simulation des tests..." # ou pytest si tu as des tests réels
+        # pip install pytest
+        # pytest
 
   # ------------------------------------------------------------------
   # JOB 2: Analyse SonarCloud
