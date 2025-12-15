@@ -9,7 +9,7 @@ on:
 
 jobs:
   # ------------------------------------------------------------------
-  # JOB 1: Build + Tests
+  # JOB 1: Build + Analyze
   # ------------------------------------------------------------------
   build:
     runs-on: ubuntu-latest
@@ -26,6 +26,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install outils ci
+        run: |
+          pip install --upgrade pip
+          pip install bandit pylint safety
+
+      - name: Bandit & Safety  
+        run: |
+          safety check -r requirements.txt
+          run: bandit -r . -q || exit 1
       - name: Run Tests
         run: |
           echo "Simulation des tests..."  # ou pytest si tu as des tests réels
