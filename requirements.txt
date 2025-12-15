@@ -3,7 +3,3 @@ flask
 pandas
 pytest
 matplotlib
-pylint
-safety
-black
-isort
